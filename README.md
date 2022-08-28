@@ -1,11 +1,13 @@
 # Pretty Verbose
+[![PyPI version](https://img.shields.io/pypi/v/pretty-verbose.svg)](https://pypi.org/project/pretty-verbose/)
+[![License](https://img.shields.io/pypi/l/pretty-verbose.svg)](https://github.com/ccmorenos/pretty_verbose/blob/main/LICENSE)
 [![Test Python Package](https://github.com/ccmorenos/pretty_verbose/actions/workflows/test-python.yml/badge.svg?branch=main)](https://github.com/ccmorenos/pretty_verbose/actions/workflows/test-python.yml) [![Upload Python Package](https://github.com/ccmorenos/pretty_verbose/actions/workflows/python-publish.yml/badge.svg)](https://github.com/ccmorenos/pretty_verbose/actions/workflows/python-publish.yml)
 
 Package for beautiful verbose printing in python.
 
 ## Installation
 
-The package is available in the [Python Package Index (PyPi)](https://test.pypi.org/project/pretty-verbose/).
+The package is available in the [Python Package Index (PyPi)](https://pypi.org/project/pretty-verbose/).
 
 ```bash
 python3 -m pip install pretty_verbose
