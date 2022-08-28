@@ -114,7 +114,7 @@ class VerboseMessages:
         print(color + now, end=" ")
         return now
 
-    def debug(self, message):
+    def debug(self, *message):
         """
         Print a debug message.
 
@@ -128,6 +128,9 @@ class VerboseMessages:
             # Print time in magenta.
             now = self.print_time(Fore.MAGENTA)
 
+            # Join messages.
+            message = ", ".join(f"{el}" for el in message)
+
             # Print message in magenta.
             print(
                 Fore.MAGENTA + f"DEBUG [{self.scope}]: " +
@@ -137,7 +140,7 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message("DEBUG", now, f"{message}")
 
-    def error(self, message):
+    def error(self, *message):
         """
         Print an error message.
 
@@ -151,6 +154,9 @@ class VerboseMessages:
             # Print time in red.
             now = self.print_time(Fore.RED)
 
+            # Join messages.
+            message = ", ".join(f"{el}" for el in message)
+
             # Print message in red.
             print(
                 Fore.RED + f"ERROR [{self.scope}]: " +
@@ -160,7 +166,7 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message("ERROR", now, f"{message}")
 
-    def warning(self, message):
+    def warning(self, *message):
         """
         Print a warning message.
 
@@ -174,6 +180,9 @@ class VerboseMessages:
             # Print time in yellow.
             now = self.print_time(Fore.YELLOW)
 
+            # Join messages.
+            message = ", ".join(f"{el}" for el in message)
+
             # Print message in yellow.
             print(
                 Fore.YELLOW + f"WARNING [{self.scope}]: " +
@@ -183,7 +192,7 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message("WARNING", now, f"{message}")
 
-    def success(self, message):
+    def success(self, *message):
         """
         Print a warning message.
 
@@ -197,6 +206,9 @@ class VerboseMessages:
             # Print time in green.
             now = self.print_time(Fore.GREEN)
 
+            # Join messages.
+            message = ", ".join(f"{el}" for el in message)
+
             # Print message in green.
             print(
                 Fore.GREEN + f"SUCCESS [{self.scope}]: " +
@@ -206,7 +218,7 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message("SUCCESS", now, f"{message}")
 
-    def info(self, message):
+    def info(self, *message):
         """
         Print an info message.
 
@@ -219,6 +231,9 @@ class VerboseMessages:
         if self.level >= 3:
             # Print time in blue.
             now = self.print_time(Fore.BLUE)
+
+            # Join messages.
+            message = ", ".join(f"{el}" for el in message)
 
             # Print message in blue.
             print(
