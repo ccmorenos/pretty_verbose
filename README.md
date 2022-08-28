@@ -1,4 +1,5 @@
 # Pretty Verbose
+[![Test Python Package](https://github.com/ccmorenos/pretty_verbose/actions/workflows/test-python.yml/badge.svg?branch=main)](https://github.com/ccmorenos/pretty_verbose/actions/workflows/test-python.yml) [![Upload Python Package](https://github.com/ccmorenos/pretty_verbose/actions/workflows/python-publish.yml/badge.svg)](https://github.com/ccmorenos/pretty_verbose/actions/workflows/python-publish.yml)
 
 Package for beautiful verbose printing in python.
 
@@ -41,14 +42,14 @@ The following messages can be printed.
 ```python
 import time
 
-messages.debug("This is an debug message.")
+messages.debug("This is a debug message.")
 messages.error("This is an error message.")
 messages.warning("This is a warning message.")
 messages.success("This is a success message.")
-messages.info("This is a info message.")
+messages.info("This is an info message.")
 
 for i in range(100):
-    if i%10 == 0:
+    if i % 10 == 0:
         messages.for_message("This is an info message inside a for loop.")
     messages.progress("This is a progress message.", (i+1))
     time.sleep(0.1)
