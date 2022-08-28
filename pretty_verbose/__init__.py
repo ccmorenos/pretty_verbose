@@ -16,7 +16,8 @@ class VerboseMessages:
         -1: Just Debug.
         0: Debug and Errors.
         1: Debug, Errors and Warnings.
-        2: Debug, Errors Warnings and Info.
+        2: Debug, Errors Warnings and Success.
+        3: Debug, Errors Warnings, Success and Info.
 
     scope: Str.
         Name of the scope to know which process prints the message.
@@ -182,9 +183,9 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message("WARNING", now, f"{message}")
 
-    def info(self, message):
+    def success(self, message):
         """
-        Print an info message.
+        Print a warning message.
 
         Parameters
         ----------
@@ -198,7 +199,30 @@ class VerboseMessages:
 
             # Print message in green.
             print(
-                Fore.GREEN + f"INFO [{self.scope}]: " +
+                Fore.GREEN + f"SUCCESS [{self.scope}]: " +
+                Style.RESET_ALL + f"{message}"
+            )
+
+            # Add message to log file.
+            self.add_message("SUCCESS", now, f"{message}")
+
+    def info(self, message):
+        """
+        Print an info message.
+
+        Parameters
+        ----------
+        message: Str.
+            Message text.
+
+        """
+        if self.level >= 3:
+            # Print time in blue.
+            now = self.print_time(Fore.BLUE)
+
+            # Print message in blue.
+            print(
+                Fore.BLUE + f"INFO [{self.scope}]: " +
                 Style.RESET_ALL + f"{message}"
             )
 
@@ -215,13 +239,13 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= 2:
-            # Print time in green.
-            now = self.print_time(Fore.GREEN)
+        if self.level >= 3:
+            # Print time in blue.
+            now = self.print_time(Fore.BLUE)
 
-            # Print message in green.
+            # Print message in blue.
             print(
-                Fore.GREEN + f"INFO [{self.scope}] -- " +
+                Fore.BLUE + f"INFO [{self.scope}] -- " +
                 Style.RESET_ALL + f"{message}"
             )
 
@@ -241,13 +265,13 @@ class VerboseMessages:
             Percentage of progress of the process.
 
         """
-        if self.level >= 2:
-            # Print time in green.
-            now = self.print_time(Fore.GREEN)
+        if self.level >= 3:
+            # Print time in blue.
+            now = self.print_time(Fore.BLUE)
 
-            # Print process status in green.
+            # Print process status in blue.
             print(
-                Fore.GREEN + f"INFO [{self.scope}] -- " +
+                Fore.BLUE + f"INFO [{self.scope}] -- " +
                 Style.RESET_ALL + f"{message}: [{percentage:.2f}%]", end="\r"
             )
 
@@ -266,13 +290,13 @@ class VerboseMessages:
             Process name text.
 
         """
-        if self.level >= 2:
-            # Print time in green.
-            now = self.print_time(Fore.GREEN)
+        if self.level >= 3:
+            # Print time in blue.
+            now = self.print_time(Fore.BLUE)
 
-            # Print process status in green.
+            # Print process status in blue.
             print(
-                Fore.GREEN + f"INFO \t[{self.scope}] -- " +
+                Fore.BLUE + f"INFO \t[{self.scope}] -- " +
                 Style.RESET_ALL + f"{process} done"
             )
 
