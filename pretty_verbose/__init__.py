@@ -1,4 +1,5 @@
 """This file manage all the verbose prints."""
+import re
 from datetime import datetime
 
 import pandas as pd
@@ -317,3 +318,66 @@ class VerboseMessages:
 
             # Add message to log file.
             self.add_message("INFO", now, f"{process} done")
+
+    def input(self, *message, input_text="INPUT"):
+        """
+        Print an input message and return the response.
+
+        Parameters
+        ----------
+        message: Str.
+            Message text.
+
+        Returns
+        -------
+            String with the response.
+
+        """
+        self.print_time(Fore.CYAN)
+
+        # Join messages.
+        message = ", ".join(f"{el}" for el in message)
+
+        # Print message in blue.
+        print(
+            Fore.CYAN + f"INPUT [{self.scope}]: " +
+            Style.RESET_ALL + f"{message} "
+        )
+
+        # Print message in blue.
+        response = input(
+            Fore.CYAN + f"{input_text}: " +
+            Style.RESET_ALL
+        )
+
+        return response
+
+    def confirm(self, *message):
+        """
+        Print a confirmation message and return the response when it is valid.
+
+        Parameters
+        ----------
+        message: Str.
+            Message text.
+
+        Returns
+        -------
+            Bool with the confirmation value.
+
+        """
+        # Join messages.
+        message = f"{', '.join(f'{el}' for el in message)}"
+
+        while True:
+            # Print message in blue.
+            response = self.input(message, input_text="[Y/n]")
+
+            if re.fullmatch(r"([Yy](es)?)?", response) is not None:
+                return True
+
+            elif re.match(r"[Nn]o?", response) is not None:
+                return False
+
+            else:
+                self.warning("Unknown option.")
