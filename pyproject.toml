@@ -1,3 +1,31 @@
 [build-system]
-requires = ["setuptools>=40.9.0"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pretty_verbose"
+version = "0.0.6"
+
+description = "Package for colored organized verbose printing in python."
+readme = "README.md"
+
+authors = [
+    {name = "C. Catalina M. Sarria", email = "ccatamorenos@gmail.com"},
+]
+maintainers = [
+    { name = "C. Catalina M. Sarria", email = "ccatamorenos@gmail.com" }
+]
+
+requires-python = ">=3.8"
+keywords = ["verbose", "log", "logger", "colors", "print"]
+license = { file = "LICENSE"}
+
+dependencies = [
+    "colorama>=0.4.6",
+    "pandas>=2.2.3"
+]
+
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pretty_verbose*"]

@@ -1,2 +1,2 @@
-colorama
-pandas
+colorama>=0.4.6
+pandas>=2.2.3
