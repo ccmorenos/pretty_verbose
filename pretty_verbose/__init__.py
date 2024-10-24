@@ -26,9 +26,12 @@ class VerboseMessages:
     filename: Path, Str.
         Log file in which save the verbose output.
 
+    sep: Str.
+        Separator of the log file.
+
     """
 
-    def __init__(self, level=2, scope="", filename="messages.log"):
+    def __init__(self, level=2, scope="", filename="messages.log", sep=";"):
         """Construct the class."""
         # Set verbose level.
         self.level = level
@@ -38,6 +41,9 @@ class VerboseMessages:
 
         # Set verbose output file.
         self.filename = filename
+
+        # Set the separator of the log file.
+        self.sep = sep
 
         # Init the log DataFrame.
         self.log_messages = None
@@ -53,7 +59,7 @@ class VerboseMessages:
         """
         try:
             self.log_messages = pd.read_csv(
-                self.filename, sep=" ", index_col=0
+                self.filename, sep=self.sep, index_col=0
             )
         except Exception:
             self.log_messages = pd.DataFrame({
@@ -95,7 +101,7 @@ class VerboseMessages:
 
     def save_log(self):
         """Save the log in the given file."""
-        self.log_messages.to_csv(self.filename, index=False, sep=" ")
+        self.log_messages.to_csv(self.filename, index=False, sep=self.sep)
 
     def print_time(self, color):
         """
