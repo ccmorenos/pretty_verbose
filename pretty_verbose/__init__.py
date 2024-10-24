@@ -63,18 +63,18 @@ class VerboseMessages:
             )
         except Exception:
             self.log_messages = pd.DataFrame({
-                "type": [],
+                "message_type": [],
                 "n_datetime": [],
                 "message": []
             })
 
-    def add_message(self, type, rightnow, message):
+    def add_message(self, message_type, rightnow, message):
         """
         Add a new row to the log.
 
         Parameters
         ----------
-        type: Str.
+        message_type: Str.
             Typo off message, (DEBUG, ERROR, WARNING, INFO).
 
         rightnow: Str.
@@ -86,7 +86,7 @@ class VerboseMessages:
         """
         # Create new row schema.
         row_schema = {
-            "type": [type],
+            "message_type": [message_type],
             "n_datetime": [rightnow],
             "message": [message]
         }
