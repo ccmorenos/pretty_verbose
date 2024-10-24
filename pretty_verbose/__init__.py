@@ -3,7 +3,6 @@ import re
 from datetime import datetime
 
 import pandas as pd
-from colorama import Fore, Style
 
 
 class VerboseMessages:
@@ -30,6 +29,14 @@ class VerboseMessages:
         Separator of the log file.
 
     """
+
+    MAGENTA = "\033[38;2;255;0;255m"
+    RED = "\033[38;2;255;0;0m"
+    YELLOW = "\033[38;2;255;255;0m"
+    GREEN = "\033[38;2;50;200;50m"
+    BLUE = "\033[38;2;50;150;255m"
+    CYAN = "\033[38;2;0;255;255m"
+    RESET = "\033[0m"
 
     def __init__(self, level=2, scope="", filename="messages.log", sep=";"):
         """Construct the class."""
@@ -103,7 +110,7 @@ class VerboseMessages:
         """Save the log in the given file."""
         self.log_messages.to_csv(self.filename, index=False, sep=self.sep)
 
-    def print_time(self, color):
+    def get_time(self, color):
         """
         Print the time in the color given.
 
@@ -118,8 +125,87 @@ class VerboseMessages:
 
         """
         now = datetime.now().strftime("[%d/%m/%Y %H:%M:%S]")
-        print(color + now, end=" ")
-        return now
+        # print(color + now, end=" ")
+        return color + now
+
+    def format_message(self, color, message_type, message, decorator=" "):
+        """
+        Print the message in the color given.
+
+        Parameters
+        ----------
+        color: Color.
+            Color for the console text.
+
+        message_type: str.
+            Type of message.
+
+        message: Str.
+            Message text.
+
+        decorator: Str.
+            Decorator to initialize the message.
+
+        Returns
+        -------
+            String with the message in color.
+
+        """
+        text = (
+            color + f"[{message_type}] [{self.scope}]:{decorator}" +
+            self.RESET + f"{message}"
+        )
+        return text
+
+    def log(
+        self,
+        min_level,
+        name,
+        color="\033[0m",
+        *message,
+        decorator=" ",
+        end="\n"
+    ):
+        """
+        Print a log message with name, color and decorator.
+
+        Parameters
+        ----------
+        min_lebel: int.
+            Minimum level of verbose to print the message.
+
+        name: str.
+            Type of message.
+
+        color: Color.
+            Color for the console text.
+
+        message: Str.
+            Message text.
+
+        decorator: Str.
+            Decorator to initialize the message.
+
+        end: Str.
+            End of the line for the printing.
+
+        """
+        if self.level >= min_level:
+            # Get time in the given color.
+            now = self.get_time(color)
+
+            # Join messages.
+            message = ", ".join(f"{el}" for el in message)
+
+            # Print message in the given color.
+            print(
+                now +
+                self.format_message(color, name, message, decorator),
+                end=end
+            )
+
+            # Add message to log file.
+            self.add_message(name, now, f"{message}")
 
     def debug(self, *message):
         """
@@ -131,21 +217,7 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= -1:
-            # Print time in magenta.
-            now = self.print_time(Fore.MAGENTA)
-
-            # Join messages.
-            message = ", ".join(f"{el}" for el in message)
-
-            # Print message in magenta.
-            print(
-                Fore.MAGENTA + f"DEBUG [{self.scope}]: " +
-                Style.RESET_ALL + f"{message}"
-            )
-
-            # Add message to log file.
-            self.add_message("DEBUG", now, f"{message}")
+        self.log(-1, "DEBUG", self.MAGENTA, *message)
 
     def error(self, *message):
         """
@@ -157,21 +229,7 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= 0:
-            # Print time in red.
-            now = self.print_time(Fore.RED)
-
-            # Join messages.
-            message = ", ".join(f"{el}" for el in message)
-
-            # Print message in red.
-            print(
-                Fore.RED + f"ERROR [{self.scope}]: " +
-                Style.RESET_ALL + f"{message}"
-            )
-
-            # Add message to log file.
-            self.add_message("ERROR", now, f"{message}")
+        self.log(0, "ERROR", self.RED, *message)
 
     def warning(self, *message):
         """
@@ -183,25 +241,11 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= 1:
-            # Print time in yellow.
-            now = self.print_time(Fore.YELLOW)
-
-            # Join messages.
-            message = ", ".join(f"{el}" for el in message)
-
-            # Print message in yellow.
-            print(
-                Fore.YELLOW + f"WARNING [{self.scope}]: " +
-                Style.RESET_ALL + f"{message}"
-            )
-
-            # Add message to log file.
-            self.add_message("WARNING", now, f"{message}")
+        self.log(1, "WARNING", self.YELLOW, *message)
 
     def success(self, *message):
         """
-        Print a warning message.
+        Print a success message.
 
         Parameters
         ----------
@@ -209,21 +253,7 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= 2:
-            # Print time in green.
-            now = self.print_time(Fore.GREEN)
-
-            # Join messages.
-            message = ", ".join(f"{el}" for el in message)
-
-            # Print message in green.
-            print(
-                Fore.GREEN + f"SUCCESS [{self.scope}]: " +
-                Style.RESET_ALL + f"{message}"
-            )
-
-            # Add message to log file.
-            self.add_message("SUCCESS", now, f"{message}")
+        self.log(2, "SUCCESS", self.GREEN, *message)
 
     def info(self, *message):
         """
@@ -235,23 +265,9 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= 3:
-            # Print time in blue.
-            now = self.print_time(Fore.BLUE)
+        self.log(3, "INFO", self.BLUE, *message)
 
-            # Join messages.
-            message = ", ".join(f"{el}" for el in message)
-
-            # Print message in blue.
-            print(
-                Fore.BLUE + f"INFO [{self.scope}]: " +
-                Style.RESET_ALL + f"{message}"
-            )
-
-            # Add message to log file.
-            self.add_message("INFO", now, f"{message}")
-
-    def for_message(self, message):
+    def for_message(self, *message):
         """
         Print a for loop message.
 
@@ -261,18 +277,7 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.level >= 3:
-            # Print time in blue.
-            now = self.print_time(Fore.BLUE)
-
-            # Print message in blue.
-            print(
-                Fore.BLUE + f"INFO [{self.scope}] -- " +
-                Style.RESET_ALL + f"{message}"
-            )
-
-            # Add message to log file.
-            self.add_message("INFO", now, f"{message}")
+        self.log(3, "INFO", self.BLUE, *message, decorator="--")
 
     def progress(self, message, percentage):
         """
@@ -287,20 +292,19 @@ class VerboseMessages:
             Percentage of progress of the process.
 
         """
-        if self.level >= 3:
-            # Print time in blue.
-            now = self.print_time(Fore.BLUE)
+        if float(f"{percentage:.2f}") < 100:
+            end = "\r"
+        else:
+            end = "\n"
 
-            # Print process status in blue.
-            print(
-                Fore.BLUE + f"INFO [{self.scope}] -- " +
-                Style.RESET_ALL + f"{message}: [{percentage:.2f}%]", end="\r"
-            )
-
-            # Add message to log file.
-            self.add_message(
-                "INFO", now, f"{message}: [{percentage:.2f}%]"
-            )
+        self.log(
+            3,
+            "INFO",
+            self.BLUE,
+            f"{message}: [{percentage:.2f}%]",
+            decorator="--",
+            end=end
+        )
 
     def end_progress(self, process="process"):
         """
@@ -312,18 +316,7 @@ class VerboseMessages:
             Process name text.
 
         """
-        if self.level >= 3:
-            # Print time in blue.
-            now = self.print_time(Fore.BLUE)
-
-            # Print process status in blue.
-            print(
-                Fore.BLUE + f"INFO \t[{self.scope}] -- " +
-                Style.RESET_ALL + f"{process} done"
-            )
-
-            # Add message to log file.
-            self.add_message("INFO", now, f"{process} done")
+        self.log(2, "SUCCESS", self.GREEN, f"{process} done", decorator="--")
 
     def input(self, *message, input_text="INPUT"):
         """
@@ -334,27 +327,24 @@ class VerboseMessages:
         message: Str.
             Message text.
 
+        input_text: Str.
+            Text to be shown before the user input.
+
         Returns
         -------
             String with the response.
 
         """
-        self.print_time(Fore.CYAN)
-
-        # Join messages.
-        message = ", ".join(f"{el}" for el in message)
+        self.log(-10000, "INPUT", self.CYAN, *message)
 
         # Print message in blue.
-        print(
-            Fore.CYAN + f"INPUT [{self.scope}]: " +
-            Style.RESET_ALL + f"{message} "
-        )
+        response = input(self.CYAN + f"{input_text} >> " + self.RESET)
 
-        # Print message in blue.
-        response = input(
-            Fore.CYAN + f"{input_text}: " +
-            Style.RESET_ALL
-        )
+        # Print time in magenta.
+        now = self.get_time(self.CYAN)
+
+        # Add message to log file.
+        self.add_message("USER INPUT", now, f"{response}")
 
         return response
 
@@ -372,12 +362,9 @@ class VerboseMessages:
             Bool with the confirmation value.
 
         """
-        # Join messages.
-        message = f"{', '.join(f'{el}' for el in message)}"
-
         while True:
-            # Print message in blue.
-            response = self.input(message, input_text="[Y/n]")
+            # Print input message.
+            response = self.input(*message, input_text="[Y/n]")
 
             if re.fullmatch(r"([Yy](es)?)?", response) is not None:
                 return True
