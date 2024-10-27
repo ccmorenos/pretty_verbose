@@ -14,9 +14,11 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   deploy:
+    name: upload release to PyPI
 
     runs-on: ubuntu-latest
 
@@ -33,5 +35,7 @@ jobs:
         python -m pip install twine
     - name: Build package
       run: python -m build
-    - name: Publish package
-      run: twine upload dist/* -u ${{ secrets.PYPI_USER }} -p ${{ secrets.PYPI_API_TOKEN }}
+    - name: Publish package to PyPI using Trusted Publishing
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        package_path: dist/*
