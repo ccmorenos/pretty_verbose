@@ -148,6 +148,20 @@ class VerboseMessages:
         )
         return text
 
+    def get_terminal_columns(self):
+        """
+        Return the number of columns of the terminal.
+
+        Returns
+        -------
+            Integer, number of columns of the terminal.
+
+        """
+        try:
+            return os.get_terminal_size().columns
+        except OSError:
+            return 80
+
     def log(
         self,
         min_level,
@@ -192,7 +206,7 @@ class VerboseMessages:
             print(
                 (
                     color + now + self.format_message(name, message, decorator)
-                ).ljust(os.get_terminal_size().columns),
+                ).ljust(self.get_terminal_columns()),
                 end=end
             )
 
