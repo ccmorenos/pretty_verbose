@@ -37,7 +37,7 @@ messages.success("This ", "is ", "a ", "success ", "message.")
 messages.success("Trying numbers", 0, 1, 0.1)
 messages.success("Trying lists", ["A", 0, 1.5])
 
-messages.info("This ", "is ", "a ", "ifo ", "message.")
+messages.info("This ", "is ", "a ", "info ", "message.")
 messages.info("Trying numbers", 0, 1, 0.1)
 messages.info("Trying lists", ["A", 0, 1.5])
 
