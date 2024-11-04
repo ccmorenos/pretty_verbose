@@ -1,8 +1,8 @@
 """This file manage all the verbose prints."""
+import csv
 import re
 from datetime import datetime
-
-import pandas as pd
+from pathlib import Path
 
 
 class VerboseMessages:
@@ -28,8 +28,11 @@ class VerboseMessages:
     sep: Str.
         Separator of the log file.
 
-    """
+    overwrite: Bool.
+        Overwrite the log file.
 
+    """
+    # Color.
     MAGENTA = "\033[38;2;255;0;255m"
     RED = "\033[38;2;255;0;0m"
     YELLOW = "\033[38;2;255;255;0m"
@@ -38,7 +41,10 @@ class VerboseMessages:
     CYAN = "\033[38;2;0;255;255m"
     RESET = "\033[0m"
 
-    def __init__(self, level=2, scope="", filename="messages.log", sep=";"):
+    def __init__(
+        self, level=2, scope="", filename="messages.log", sep=";",
+        overwrite=False
+    ):
         """Construct the class."""
         # Set verbose level.
         self.level = level
@@ -47,35 +53,35 @@ class VerboseMessages:
         self.scope = scope
 
         # Set verbose output file.
-        self.filename = filename
+        self.filename = Path(filename).resolve()
 
         # Set the separator of the log file.
         self.sep = sep
 
         # Init the log DataFrame.
-        self.log_messages = None
-        self.start_log()
+        self.start_log(overwrite)
 
-    def start_log(self):
+    def start_log(self, overwrite):
         """
         Star the log file.
 
-        Try to read the log file, create an empty DataFrame if the file do not
-        exists or and error occurs.
+        If the file does note exists or if the overwrite is activated, open a
+        file an write the header.
+
+        Parameters
+        ----------
+        overwrite: Bool.
+            Flag indicating whether overwrite or not the log file.
 
         """
-        try:
-            self.log_messages = pd.read_csv(
-                self.filename, sep=self.sep, index_col=0
-            )
-        except Exception:
-            self.log_messages = pd.DataFrame({
-                "message_type": [],
-                "n_datetime": [],
-                "message": []
-            })
+        if not self.filename.exists() or overwrite:
+            with open(self.filename, "w", newline="") as file:
+                log_messages = csv.writer(file, delimiter=self.sep)
+                log_messages.writerow(
+                    ["message_type", "n_datetime", "message"]
+                )
 
-    def add_message(self, message_type, rightnow, message):
+    def add_message(self, message_type, right_now, message):
         """
         Add a new row to the log.
 
@@ -84,31 +90,16 @@ class VerboseMessages:
         message_type: Str.
             Typo off message, (DEBUG, ERROR, WARNING, INFO).
 
-        rightnow: Str.
+        right_now: Str.
             Time of the message.
 
         message: Str.
             Message text.
 
         """
-        # Create new row schema.
-        row_schema = {
-            "message_type": [message_type],
-            "n_datetime": [rightnow],
-            "message": [message]
-        }
-
-        # Append row.
-        self.log_messages = pd.concat(
-            [self.log_messages, pd.DataFrame(row_schema)], ignore_index=True
-        )
-
-        # Save log file.
-        self.save_log()
-
-    def save_log(self):
-        """Save the log in the given file."""
-        self.log_messages.to_csv(self.filename, index=False, sep=self.sep)
+        with open(self.filename, "a", newline="") as file:
+            log_messages = csv.writer(file, delimiter=self.sep)
+            log_messages.writerow([message_type, right_now, message])
 
     def get_time(self, color):
         """
