@@ -3,6 +3,7 @@ import csv
 import re
 from datetime import datetime
 from pathlib import Path
+import os
 
 
 class VerboseMessages:
@@ -189,8 +190,9 @@ class VerboseMessages:
 
             # Print message in the given color.
             print(
-                color + now +
-                self.format_message(name, message, decorator),
+                (
+                    color + now + self.format_message(name, message, decorator)
+                ).ljust(os.get_terminal_size().columns),
                 end=end
             )
 
