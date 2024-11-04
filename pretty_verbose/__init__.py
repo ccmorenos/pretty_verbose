@@ -118,7 +118,7 @@ class VerboseMessages:
         now = datetime.now().strftime("[%d/%m/%Y %H:%M:%S]")
         return now
 
-    def format_message(self, color, message_type, message, decorator=" "):
+    def format_message(self, message_type, message, decorator=" "):
         """
         Print the message in the color given.
 
@@ -142,8 +142,8 @@ class VerboseMessages:
 
         """
         text = (
-            color + f"[{message_type}] [{self.scope}]:{decorator}" +
-            self.RESET + f"{message}"
+            f"[{message_type}] [{self.scope}]:{decorator}" +
+            f"{self.RESET}{message}"
         )
         return text
 
@@ -189,8 +189,8 @@ class VerboseMessages:
 
             # Print message in the given color.
             print(
-                now +
-                self.format_message(color, name, message, decorator),
+                color + now +
+                self.format_message(name, message, decorator),
                 end=end
             )
 
@@ -267,7 +267,7 @@ class VerboseMessages:
             Message text.
 
         """
-        self.log(3, "INFO", self.BLUE, *message, decorator="--")
+        self.log(3, "INFO", self.BLUE, *message, decorator=" - ")
 
     def progress(self, message, percentage):
         """
@@ -292,7 +292,7 @@ class VerboseMessages:
             "INFO",
             self.BLUE,
             f"{message}: [{percentage:.2f}%]",
-            decorator="--",
+            decorator=" - ",
             end=end
         )
 
@@ -306,7 +306,7 @@ class VerboseMessages:
             Process name text.
 
         """
-        self.log(2, "SUCCESS", self.GREEN, f"{process} done", decorator="--")
+        self.log(2, "SUCCESS", self.GREEN, f"{process} done", decorator=" - ")
 
     def input(self, *message, input_text="INPUT"):
         """
