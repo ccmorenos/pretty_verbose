@@ -101,7 +101,7 @@ class VerboseMessages:
             log_messages = csv.writer(file, delimiter=self.sep)
             log_messages.writerow([message_type, right_now, message])
 
-    def get_time(self, color):
+    def get_time(self):
         """
         Print the time in the color given.
 
@@ -116,8 +116,7 @@ class VerboseMessages:
 
         """
         now = datetime.now().strftime("[%d/%m/%Y %H:%M:%S]")
-        # print(color + now, end=" ")
-        return color + now
+        return now
 
     def format_message(self, color, message_type, message, decorator=" "):
         """
@@ -183,7 +182,7 @@ class VerboseMessages:
         """
         if self.level >= min_level:
             # Get time in the given color.
-            now = self.get_time(color)
+            now = self.get_time()
 
             # Join messages.
             message = ", ".join(f"{el}" for el in message)
@@ -332,7 +331,7 @@ class VerboseMessages:
         response = input(self.CYAN + f"{input_text} >> " + self.RESET)
 
         # Print time in magenta.
-        now = self.get_time(self.CYAN)
+        now = self.get_time()
 
         # Add message to log file.
         self.add_message("USER INPUT", now, f"{response}")
