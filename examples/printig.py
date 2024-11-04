@@ -16,7 +16,7 @@ messages.info("This is an info message.")
 for i in range(50):
     if i % 10 == 0:
         messages.for_message("This is an info message inside a for loop.")
-    messages.progress("This is a progress message.", (i+1)/50)
+    messages.progress("This is a progress message.", (i+1)/0.5)
     time.sleep(0.01)
 messages.end_progress("Loop.")
 
