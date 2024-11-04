@@ -327,8 +327,17 @@ class VerboseMessages:
         """
         self.log(-10000, "INPUT", self.CYAN, *message)
 
-        # Print message in blue.
-        response = input(self.CYAN + f"{input_text} >> " + self.RESET)
+        try:
+            # Print message in blue.
+            response = input(self.CYAN + f"{input_text} >> " + self.RESET)
+
+        except EOFError:
+            self.warning("Exiting the program")
+            exit(0)
+
+        except KeyboardInterrupt:
+            self.error("Action aborted by the user")
+            exit(1)
 
         # Print time in magenta.
         now = self.get_time()
