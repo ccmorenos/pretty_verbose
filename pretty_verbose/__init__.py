@@ -14,11 +14,12 @@ class VerboseMessages:
     ----------
     level: Int.
         Level of verbose for the console output.
-        -1: Just Debug.
-        0: Debug and Errors.
-        1: Debug, Errors and Warnings.
-        2: Debug, Errors Warnings and Success.
-        3: Debug, Errors Warnings, Success and Info.
+        -1: Nothing.
+        0: just Errors.
+        1: Errors and Warnings.
+        2: Errors Warnings and Success.
+        3: Errors Warnings, Success and Info.
+        4: Errors Warnings, Success, Info and Debug.
 
     scope: Str.
         Name of the scope to know which process prints the message.
@@ -213,18 +214,6 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message(name, now, f"{message}")
 
-    def debug(self, *message):
-        """
-        Print a debug message.
-
-        Parameters
-        ----------
-        message: Str.
-            Message text.
-
-        """
-        self.log(-1, "DEBUG", self.MAGENTA, *message)
-
     def error(self, *message):
         """
         Print an error message.
@@ -324,6 +313,18 @@ class VerboseMessages:
         """
         self.log(2, "SUCCESS", self.GREEN, f"{process} done", decorator=" - ")
 
+    def debug(self, *message):
+        """
+        Print a debug message.
+
+        Parameters
+        ----------
+        message: Str.
+            Message text.
+
+        """
+        self.log(4, "DEBUG", self.MAGENTA, *message)
+
     def input(self, *message, input_text="INPUT"):
         """
         Print an input message and return the response.
@@ -341,7 +342,7 @@ class VerboseMessages:
             String with the response.
 
         """
-        self.log(-10000, "INPUT", self.CYAN, *message)
+        self.log(-1e9, "INPUT", self.CYAN, *message)
 
         try:
             # Print message in blue.
