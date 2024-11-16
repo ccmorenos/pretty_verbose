@@ -1,4 +1,4 @@
-"""This file manage all the verbose prints."""
+"""Class of the messages printing."""
 import csv
 import re
 from datetime import datetime
@@ -8,7 +8,7 @@ import os
 
 class VerboseMessages:
     """
-    The class of the verbose prints.
+    The class that abtracst a printer.
 
     Parameters
     ----------
