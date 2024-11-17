@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pretty_verbose.constants import colors
+from pretty_verbose import LoggerError
 
 
 class VerboseMessages:
@@ -220,7 +221,7 @@ class VerboseMessages:
             # Add message to log file.
             self.add_message(name, now, f"{message}")
 
-    def error(self, *message, err_id=0, err_msg=""):
+    def error(self, *message, err_id=0, err_str="", err_class=None):
         """
         Print an error message.
 
@@ -234,26 +235,35 @@ class VerboseMessages:
             and will exit the process. This argument represents the id of the
             error.
 
-        err_msg: Str. Default: ".
+        err_str: Str. Default: ".
             If different of "" or None, it will be printed as the error
-            message.
+            string identifier.
 
         """
-        self.log(0, "ERROR", colors.RED, *message)
         if err_id:
-            if err_msg:
-                err_msg = f"Error {err_id}: {err_msg}"
+            if isinstance(err_class, LoggerError):
+                raise err_class(
+                    colors.RED, *message, err_id=err_id, err_str=err_str
+                )
+
+            if err_str:
+                err_msg = f"[Error {err_id} ({err_str})]: "
             else:
-                err_msg = f"Error {err_id}"
+                err_msg = f"[Error {err_id}]: "
 
-            if isinstance(err_id, int):
+            err_msg += ",".join(f"{el}" for el in message)
+
+            if isinstance(err_class, Exception):
+                raise err_class(colors.RED + err_msg)
+
+            if not isinstance(err_id, int):
                 err_id = 1
-
-            # if isinstance(err_class, Exception):
-            #     raise Exception()
 
             self.log(0, "ERROR", colors.RED, err_msg)
             exit(err_id)
+
+        else:
+            self.log(0, "ERROR", colors.RED, *message)
 
     def warning(self, *message):
         """
