@@ -37,18 +37,21 @@ class Task(VerboseMessages):
     process: Bool. Default: None.
         Parent process.
 
+    **config:
+        Parameters passed through `VerboseMessages`.
+
     """
     # Estructure of the process name.
     NAME_REGEX = r"^(([^ \n]+\.)*([^ \n]+:))?([^ \n.:]*)$"
 
     def __init__(
         self, level, name, log_file, sep=";", overwrite=False, timer=False,
-        process=None,
+        process=None, **config
     ):
         # Create messager.
         super().__init__(
             level=level, name=name, filename=log_file, sep=sep,
-            overwrite=overwrite
+            overwrite=overwrite, **config
         )
 
         # Timer of the task.
@@ -191,6 +194,9 @@ class Process(Task):
     process: Task. Default: None.
         Parent process.
 
+    **config:
+        Parameters passed through `Task`.
+
     """
     __depth = 0
 
@@ -199,12 +205,12 @@ class Process(Task):
 
     def __init__(
         self, level, name, log_file, sep=";", overwrite=False, timer=False,
-        depth=None, process=None
+        depth=None, process=None, **config
     ):
         # Create task.
         super().__init__(
             level=level, name=name, log_file=log_file, sep=sep, timer=timer,
-            overwrite=overwrite
+            overwrite=overwrite, **config
         )
 
         self.subprocesses = {}
@@ -241,8 +247,7 @@ class Process(Task):
             self.error(
                 "Max recursivity depth reached, please reduce the "
                 "recursivity depth or change the max depth parameter",
-                err_id=104,
-                err_msg="MAX DEPTH REACHED"
+                err_id=104, err_msg="MAX DEPTH REACHED"
             )
 
         self.__depth = process.get_depth() + 1

@@ -36,6 +36,9 @@ class VerboseMessages:
     overwrite: Bool. Default: False.
         Overwrite the log file.
 
+    no_save: Bool. Default: False.
+        When active prevents the output saving.
+
     """
     # Color.
     MAGENTA = "\033[38;2;255;0;255m"
@@ -48,7 +51,7 @@ class VerboseMessages:
 
     def __init__(
         self, level=1, name="", scope="", filename="messages.log", sep=";",
-        overwrite=False
+        overwrite=False, no_save=False
     ):
         """Construct the class."""
         # Set verbose level.
@@ -65,6 +68,11 @@ class VerboseMessages:
 
         # Set the separator of the log file.
         self.sep = sep
+
+        # No save flag.
+        self.no_save = no_save
+        if self.no_save:
+            return
 
         # Init the log DataFrame.
         self.start_log(overwrite)
@@ -107,6 +115,8 @@ class VerboseMessages:
             Message text.
 
         """
+        if self.no_save:
+            return
         with open(self.filename, "a", newline="", encoding="utf-8") as file:
             log_messages = csv.writer(file, delimiter=self.sep)
             log_messages.writerow([message_type, right_now, message])
