@@ -60,7 +60,7 @@ class Logger(Process):
             else:
                 self.error(
                     "Logger folder does not exist, exiting...",
-                    err_id=101, err_msg="MISSING FOLDER"
+                    err_id=101, err_str="MISSING FOLDER"
                 )
 
         # Update no save.

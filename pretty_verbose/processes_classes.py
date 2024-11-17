@@ -247,7 +247,7 @@ class Process(Task):
             self.error(
                 "Max recursivity depth reached, please reduce the "
                 "recursivity depth or change the max depth parameter",
-                err_id=104, err_msg="MAX DEPTH REACHED"
+                err_id=104, err_str="MAX DEPTH REACHED"
             )
 
         self.__depth = process.get_depth() + 1
@@ -308,7 +308,7 @@ class Process(Task):
         if parents != "" and parents != self.name:
             self.error(
                 f"Task belongs to another process: {parents}.",
-                err_id=105, err_msg="INCOMPATIBLE PARENTS"
+                err_id=105, err_str="INCOMPATIBLE PARENTS"
             )
 
         return self.tasks.get(f"{self.name}:{name}", None) is not None
@@ -364,8 +364,8 @@ class Process(Task):
 
         if parents != "" and parents != self.name:
             self.error(
-                f"Task belongs to another process: {parents}.",
-                err_id=105, err_msg="INCOMPATIBLE PARENTS"
+                f"Processor belongs to another process: {parents}.",
+                err_id=105, err_str="INCOMPATIBLE PARENTS"
             )
 
         return self.subprocesses.get(f"{self.name}.{name}", None) is not None
