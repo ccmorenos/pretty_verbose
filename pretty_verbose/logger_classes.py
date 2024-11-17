@@ -1,5 +1,6 @@
 """Classes of the logger."""
 from pathlib import Path
+
 from pretty_verbose.processes_classes import Process
 
 

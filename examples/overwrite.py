@@ -1,5 +1,6 @@
-from pretty_verbose import VerboseMessages
 import time
+
+from pretty_verbose import VerboseMessages
 
 
 def write_log(overwrite):

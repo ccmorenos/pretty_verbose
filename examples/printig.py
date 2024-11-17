@@ -1,5 +1,6 @@
-from pretty_verbose import VerboseMessages
 import time
+
+from pretty_verbose import VerboseMessages
 
 messages = VerboseMessages(
     level=3,
