@@ -153,7 +153,7 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        decorator: Str.
+        decorator: Str. Default: " ".
             Decorator to initialize the message.
 
         Returns
@@ -189,10 +189,10 @@ class VerboseMessages:
 
         Parameters
         ----------
-        min_lebel: int.
+        min_lebel: Int.
             Minimum level of verbose to print the message.
 
-        name: str.
+        name: Str.
             Type of message.
 
         color: Color.
@@ -201,10 +201,10 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        decorator: Str.
+        decorator: Str. Default: " ".
             Decorator to initialize the message.
 
-        end: Str.
+        end: Str. Default: "\n".
             End of the line for the printing.
 
         """
@@ -234,6 +234,15 @@ class VerboseMessages:
         ----------
         message: Str.
             Message text.
+
+        err_id: Int | Str. Default: 0.
+            If different of 0, "" or None, the function will print a message
+            and will exit the process. This argument represents the id of the
+            error.
+
+        err_msg: Str. Default: ".
+            If different of "" or None, it will be printed as the error
+            message.
 
         """
         self.log(0, "ERROR", self.RED, *message)
