@@ -1,9 +1,9 @@
 """Class of the messages printing."""
 import csv
+import os
 import re
 from datetime import datetime
 from pathlib import Path
-import os
 
 
 class VerboseMessages:
@@ -12,7 +12,7 @@ class VerboseMessages:
 
     Parameters
     ----------
-    level: Int.
+    level: Int. Default: 1.
         Level of verbose for the console output.
         -1: Nothing.
         0: just Errors.
@@ -21,19 +21,19 @@ class VerboseMessages:
         3: Errors Warnings, Success and Info.
         4: Errors Warnings, Success, Info and Debug.
 
-    name: Str.
-        Name of the scope to know which process prints the message.
+    name: Str. Default: "".
+        Name of the scope to know who is printing the message.
 
-    scope: Str.
+    scope: Str. Default: "".
         Alias for name (Will be removed in future releases).
 
-    filename: Path, Str.
+    filename: Path, Str. Default: "messages.log".
         Log file in which save the verbose output.
 
-    sep: Str.
+    sep: Str. Default: ";".
         Separator of the log file.
 
-    overwrite: Bool.
+    overwrite: Bool. Default: False.
         Overwrite the log file.
 
     """
@@ -47,7 +47,7 @@ class VerboseMessages:
     RESET = "\033[0m"
 
     def __init__(
-        self, level=2, name="", scope="", filename="messages.log", sep=";",
+        self, level=1, name="", scope="", filename="messages.log", sep=";",
         overwrite=False
     ):
         """Construct the class."""
