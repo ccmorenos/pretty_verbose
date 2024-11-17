@@ -77,7 +77,9 @@ class VerboseMessages:
 
         """
         if not self.filename.exists() or overwrite:
-            with open(self.filename, "w", newline="") as file:
+            with open(
+                self.filename, "w", newline="", encoding="utf-8"
+            ) as file:
                 log_messages = csv.writer(file, delimiter=self.sep)
                 log_messages.writerow(
                     ["message_type", "n_datetime", "message"]
@@ -99,7 +101,7 @@ class VerboseMessages:
             Message text.
 
         """
-        with open(self.filename, "a", newline="") as file:
+        with open(self.filename, "a", newline="", encoding="utf-8") as file:
             log_messages = csv.writer(file, delimiter=self.sep)
             log_messages.writerow([message_type, right_now, message])
 
@@ -164,12 +166,7 @@ class VerboseMessages:
             return 80
 
     def log(
-        self,
-        min_level,
-        name,
-        color="\033[0m",
-        *message,
-        decorator=" ",
+        self, min_level, name, *message, color="\033[0m", decorator=" ",
         end="\n"
     ):
         """
@@ -227,13 +224,14 @@ class VerboseMessages:
         self.log(0, "ERROR", self.RED, *message)
         if err_id:
             if err_msg:
-                f"Error {err_id}: {err_msg}"
+                err_msg = f"Error {err_id}: {err_msg}"
             else:
-                f"Error {err_id}"
+                err_msg = f"Error {err_id}"
 
             if isinstance(err_id, int):
                 err_id = 1
-            
+
+            self.log(0, "ERROR", self.RED, err_msg)
             exit(err_id)
 
     def warning(self, *message):
