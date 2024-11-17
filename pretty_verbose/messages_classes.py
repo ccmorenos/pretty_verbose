@@ -8,7 +8,7 @@ import os
 
 class VerboseMessages:
     """
-    The class that abtracst a printer.
+    The class that abstract a printer.
 
     Parameters
     ----------
@@ -21,8 +21,11 @@ class VerboseMessages:
         3: Errors Warnings, Success and Info.
         4: Errors Warnings, Success, Info and Debug.
 
-    scope: Str.
+    name: Str.
         Name of the scope to know which process prints the message.
+
+    scope: Str.
+        Alias for name (Will be removed in future releases).
 
     filename: Path, Str.
         Log file in which save the verbose output.
@@ -44,7 +47,7 @@ class VerboseMessages:
     RESET = "\033[0m"
 
     def __init__(
-        self, level=2, scope="", filename="messages.log", sep=";",
+        self, level=2, name="", scope="", filename="messages.log", sep=";",
         overwrite=False
     ):
         """Construct the class."""
@@ -52,7 +55,10 @@ class VerboseMessages:
         self.level = level
 
         # Set verbose scope.
-        self.scope = scope
+        if name:
+            self.scope = name
+        else:
+            self.scope = scope
 
         # Set verbose output file.
         self.filename = Path(filename).resolve()
