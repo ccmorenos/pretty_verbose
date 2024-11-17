@@ -1,6 +1,7 @@
 """This example test the processes classes and functionalities."""
 import time
 from random import random
+
 from pretty_verbose import Process
 
 
