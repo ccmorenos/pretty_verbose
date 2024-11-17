@@ -56,9 +56,9 @@ class VerboseMessages:
 
         # Set verbose scope.
         if name:
-            self.scope = name
+            self.name = self.scope = name
         else:
-            self.scope = scope
+            self.name = self.scope = scope
 
         # Set verbose output file.
         self.filename = Path(filename).resolve()
