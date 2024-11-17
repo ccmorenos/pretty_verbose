@@ -5,6 +5,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+from pretty_verbose.constants import colors
+
 
 class VerboseMessages:
     """
@@ -40,14 +42,6 @@ class VerboseMessages:
         When active prevents the output saving.
 
     """
-    # Color.
-    MAGENTA = "\033[38;2;255;0;255m"
-    RED = "\033[38;2;255;0;0m"
-    YELLOW = "\033[38;2;255;255;0m"
-    GREEN = "\033[38;2;50;200;50m"
-    BLUE = "\033[38;2;50;150;255m"
-    CYAN = "\033[38;2;0;255;255m"
-    RESET = "\033[0m"
 
     def __init__(
         self, level=1, name="", scope="", filename="messages.log", sep=";",
@@ -163,7 +157,7 @@ class VerboseMessages:
         """
         text = (
             f"[{message_type}] [{self.scope}]:{decorator}" +
-            f"{self.RESET}{message}"
+            f"{colors.RESET}{message}"
         )
         return text
 
@@ -245,7 +239,7 @@ class VerboseMessages:
             message.
 
         """
-        self.log(0, "ERROR", self.RED, *message)
+        self.log(0, "ERROR", colors.RED, *message)
         if err_id:
             if err_msg:
                 err_msg = f"Error {err_id}: {err_msg}"
@@ -255,7 +249,10 @@ class VerboseMessages:
             if isinstance(err_id, int):
                 err_id = 1
 
-            self.log(0, "ERROR", self.RED, err_msg)
+            # if isinstance(err_class, Exception):
+            #     raise Exception()
+
+            self.log(0, "ERROR", colors.RED, err_msg)
             exit(err_id)
 
     def warning(self, *message):
@@ -268,7 +265,7 @@ class VerboseMessages:
             Message text.
 
         """
-        self.log(1, "WARNING", self.YELLOW, *message)
+        self.log(1, "WARNING", colors.YELLOW, *message)
 
     def success(self, *message):
         """
@@ -280,7 +277,7 @@ class VerboseMessages:
             Message text.
 
         """
-        self.log(2, "SUCCESS", self.GREEN, *message)
+        self.log(2, "SUCCESS", colors.GREEN, *message)
 
     def info(self, *message):
         """
@@ -292,7 +289,7 @@ class VerboseMessages:
             Message text.
 
         """
-        self.log(3, "INFO", self.BLUE, *message)
+        self.log(3, "INFO", colors.BLUE, *message)
 
     def for_message(self, *message):
         """
@@ -304,7 +301,7 @@ class VerboseMessages:
             Message text.
 
         """
-        self.log(3, "INFO", self.BLUE, *message, decorator=" - ")
+        self.log(3, "INFO", colors.BLUE, *message, decorator=" - ")
 
     def progress(self, message, percentage):
         """
@@ -327,7 +324,7 @@ class VerboseMessages:
         self.log(
             3,
             "INFO",
-            self.BLUE,
+            colors.BLUE,
             f"{message}: [{percentage:.2f}%]",
             decorator=" - ",
             end=end
@@ -343,7 +340,9 @@ class VerboseMessages:
             Process name text.
 
         """
-        self.log(2, "SUCCESS", self.GREEN, f"{process} done", decorator=" - ")
+        self.log(
+            2, "SUCCESS", colors.GREEN, f"{process} done", decorator=" - "
+        )
 
     def debug(self, *message):
         """
@@ -355,7 +354,7 @@ class VerboseMessages:
             Message text.
 
         """
-        self.log(4, "DEBUG", self.MAGENTA, *message)
+        self.log(4, "DEBUG", colors.MAGENTA, *message)
 
     def input(self, *message, input_text="INPUT"):
         """
@@ -374,11 +373,11 @@ class VerboseMessages:
             String with the response.
 
         """
-        self.log(-1e9, "INPUT", self.CYAN, *message)
+        self.log(-1e9, "INPUT", colors.CYAN, *message)
 
         try:
             # Print message in blue.
-            response = input(self.CYAN + f"{input_text} >> " + self.RESET)
+            response = input(colors.CYAN + f"{input_text} >> " + colors.RESET)
 
         except EOFError:
             self.warning("Exiting the program")

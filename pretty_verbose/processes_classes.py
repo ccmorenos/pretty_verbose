@@ -308,8 +308,7 @@ class Process(Task):
         if parents != "" and parents != self.name:
             self.error(
                 f"Task belongs to another process: {parents}.",
-                err_id=105,
-                err_msg="INCOMPATIBLE PARENTS"
+                err_id=105, err_msg="INCOMPATIBLE PARENTS"
             )
 
         return self.tasks.get(f"{self.name}:{name}", None) is not None
@@ -366,8 +365,7 @@ class Process(Task):
         if parents != "" and parents != self.name:
             self.error(
                 f"Task belongs to another process: {parents}.",
-                err_id=105,
-                err_msg="INCOMPATIBLE PARENTS"
+                err_id=105, err_msg="INCOMPATIBLE PARENTS"
             )
 
         return self.subprocesses.get(f"{self.name}.{name}", None) is not None
