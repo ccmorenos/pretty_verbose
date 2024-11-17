@@ -172,8 +172,7 @@ class VerboseMessages:
             return 80
 
     def log(
-        self, min_level, name, *message, color="\033[0m", decorator=" ",
-        end="\n"
+        self, min_level, name, color, *message, decorator=" ", end="\n"
     ):
         """
         Print a log message with name, color and decorator.
