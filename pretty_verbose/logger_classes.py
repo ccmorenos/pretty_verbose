@@ -1,7 +1,6 @@
 """Classes of the logger."""
 from pathlib import Path
 
-from pretty_verbose.error_classes import MissingLogFolderError
 from pretty_verbose.processes_classes import Process
 
 
@@ -33,7 +32,7 @@ class Logger(Process):
         Log file in which save the verbose output.
 
     **config:
-        Parameters passed through `Process`.
+        Parameters passed to `Process`.
 
     """
 
@@ -44,31 +43,10 @@ class Logger(Process):
         # Resolve the output directory.
         self.log_dir = Path(log_dir).resolve()
 
-        # No save flag.
-        no_save = config.pop("no_save", False)
-
         # create process.
         super().__init__(
-            level, name, log_file=self.log_dir/log_file, no_save=True, **config
+            level, name, log_file=self.log_dir/log_file, **config
         )
-
-        # Check if the directory exists.
-        if not self.log_dir.exists() and not no_save:
-            self.warning(f"The log dir '{self.log_dir}' does not exist!")
-
-            if self.confirm("Do you want to create it?"):
-                self.log_dir.mkdir()
-            else:
-                self.error(
-                    f"Logger folder '{self.log_dir}' does not exist",
-                    "exiting program...",
-                    err_class=MissingLogFolderError
-                )
-
-        # Update no save.
-        self.no_save = no_save
-        if not self.no_save:
-            self.start_log(config.pop("overwrite", False))
 
     def new_task(self, name, log_file, **config):
         """Add a new task to the process.
@@ -82,7 +60,7 @@ class Logger(Process):
             Log file in which save the verbose output.
 
         **config:
-            Parameters passed through `Task`.
+            Parameters passed to `Task`.
 
         Returns
         -------
@@ -103,7 +81,7 @@ class Logger(Process):
             Log file in which save the verbose output.
 
         **config:
-            Parameters passed through `Process`.
+            Parameters passed to `Process`.
 
         Returns
         -------

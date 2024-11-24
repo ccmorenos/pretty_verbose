@@ -38,7 +38,7 @@ class Task(VerboseMessages):
         Parent process.
 
     **config:
-        Parameters passed through `VerboseMessages`.
+        Parameters passed to `VerboseMessages`.
 
     """
     # Estructure of the process name.
@@ -195,7 +195,7 @@ class Process(Task):
         Parent process.
 
     **config:
-        Parameters passed through `Task`.
+        Parameters passed to `Task`.
 
     """
     __depth = 0
@@ -268,7 +268,7 @@ class Process(Task):
             Log file in which save the verbose output.
 
         **config:
-            Parameters passed through `Task`.
+            Parameters passed to `Task`.
 
         Returns
         -------
@@ -325,7 +325,7 @@ class Process(Task):
             Log file in which save the verbose output.
 
         **config:
-            Parameters passed through `Process`.
+            Parameters passed to `Process`.
 
         Returns
         -------

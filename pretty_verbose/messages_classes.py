@@ -43,6 +43,7 @@ class VerboseMessages:
         When active prevents the output saving.
 
     """
+    __log_started = False
 
     def __init__(
         self, level=1, name="", scope="", filename="messages.log", sep=";",
@@ -64,36 +65,35 @@ class VerboseMessages:
         # Set the separator of the log file.
         self.sep = sep
 
-        # No save flag.
-        self.no_save = no_save
-        if not self.no_save:
-            # Init the log DataFrame.
-            self.start_log(overwrite)
+        # Overwrite flag
+        self.overwrite = overwrite
 
-    def start_log(self, overwrite):
+        # No save flag.
+        self.__no_save = no_save
+        # Init the log DataFrame.
+        self.start_log()
+
+    def start_log(self):
         """
         Star the log file.
 
         If the file does note exists or if the overwrite is activated, open a
         file an write the header.
 
-        Parameters
-        ----------
-        overwrite: Bool.
-            Flag indicating whether overwrite or not the log file.
-
         """
+        if self.__no_save:
+            return
+
         # Check if the directory exists.
         if not self.filename.parent.exists():
-            no_save, self.no_save = self.no_save, True
+            no_save, self.__no_save = self.__no_save, True
             p_folder = self.filename.parent
             self.warning(
                 f"The log dir '{p_folder}' does not exist!"
             )
 
             if self.confirm("Do you want to create it?"):
-                self.filename.parent.mkdir(parents=True)
-                self.no_save = no_save
+                p_folder.mkdir(parents=True)
             else:
                 self.error(
                     f"Logger folder '{p_folder}' does not exist",
@@ -101,7 +101,13 @@ class VerboseMessages:
                     err_class=MissingLogFolderError
                 )
 
-        if not self.filename.exists() or overwrite:
+            self.__no_save = no_save
+
+        if self.__log_started:
+            self.warning("The log file is already started", "ignoring...")
+            return
+
+        if not self.filename.exists() or self.overwrite:
             with open(
                 self.filename, "w", newline="", encoding="utf-8"
             ) as file:
@@ -109,6 +115,14 @@ class VerboseMessages:
                 log_messages.writerow(
                     ["message_type", "n_datetime", "message"]
                 )
+
+        self.__log_started = True
+
+    def set_no_save(self, no_save):
+        """Set the value of not_save."""
+        self.__no_save = no_save
+        # Init the log DataFrame.
+        self.start_log()
 
     def __add_message(self, message_type, right_now, message):
         """
@@ -236,7 +250,7 @@ class VerboseMessages:
                 end=end
             )
 
-            if self.no_save or skip_save:
+            if self.__no_save or skip_save:
                 return
 
             # Add message to log file.
