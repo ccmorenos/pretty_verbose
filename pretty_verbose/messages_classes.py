@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pretty_verbose.constants import colors
-from pretty_verbose import RunningError, LoggerErrorBase
+from pretty_verbose import RunningError, LoggerErrorBase, MissingLogFolderError
 
 
 class VerboseMessages:
@@ -66,11 +66,9 @@ class VerboseMessages:
 
         # No save flag.
         self.no_save = no_save
-        if self.no_save:
-            return
-
-        # Init the log DataFrame.
-        self.start_log(overwrite)
+        if not self.no_save:
+            # Init the log DataFrame.
+            self.start_log(overwrite)
 
     def start_log(self, overwrite):
         """
@@ -85,6 +83,24 @@ class VerboseMessages:
             Flag indicating whether overwrite or not the log file.
 
         """
+        # Check if the directory exists.
+        if not self.filename.parent.exists():
+            no_save, self.no_save = self.no_save, True
+            p_folder = self.filename.parent
+            self.warning(
+                f"The log dir '{p_folder}' does not exist!"
+            )
+
+            if self.confirm("Do you want to create it?"):
+                self.filename.parent.mkdir(parents=True)
+                self.no_save = no_save
+            else:
+                self.error(
+                    f"Logger folder '{p_folder}' does not exist",
+                    "exiting program...",
+                    err_class=MissingLogFolderError
+                )
+
         if not self.filename.exists() or overwrite:
             with open(
                 self.filename, "w", newline="", encoding="utf-8"
@@ -94,7 +110,7 @@ class VerboseMessages:
                     ["message_type", "n_datetime", "message"]
                 )
 
-    def add_message(self, message_type, right_now, message):
+    def __add_message(self, message_type, right_now, message):
         """
         Add a new row to the log.
 
@@ -110,8 +126,6 @@ class VerboseMessages:
             Message text.
 
         """
-        if self.no_save:
-            return
         with open(self.filename, "a", newline="", encoding="utf-8") as file:
             log_messages = csv.writer(file, delimiter=self.sep)
             log_messages.writerow([message_type, right_now, message])
@@ -177,7 +191,8 @@ class VerboseMessages:
             return 80
 
     def log(
-        self, min_level, name, color, *message, decorator=" ", end="\n"
+        self, min_level, name, color, *message, decorator=" ", end="\n",
+        skip_save=False
     ):
         """
         Print a log message with name, color and decorator.
@@ -202,6 +217,9 @@ class VerboseMessages:
         end: Str. Default: "\n".
             End of the line for the printing.
 
+        skip_save: Bool. Default: False.
+            Skip saving the log to a file.
+
         """
         if self.level >= min_level:
             # Get time in the given color.
@@ -218,8 +236,11 @@ class VerboseMessages:
                 end=end
             )
 
+            if self.no_save or skip_save:
+                return
+
             # Add message to log file.
-            self.add_message(name, now, f"{message}")
+            self.__add_message(name, now, f"{message}")
 
     def error(self, *message, err_id=0, err_str="", err_class=None):
         """

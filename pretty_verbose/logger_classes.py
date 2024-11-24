@@ -1,6 +1,7 @@
 """Classes of the logger."""
 from pathlib import Path
 
+from pretty_verbose.error_classes import MissingLogFolderError
 from pretty_verbose.processes_classes import Process
 
 
@@ -52,15 +53,16 @@ class Logger(Process):
         )
 
         # Check if the directory exists.
-        if not self.log_dir.exists():
+        if not self.log_dir.exists() and not no_save:
             self.warning(f"The log dir '{self.log_dir}' does not exist!")
 
             if self.confirm("Do you want to create it?"):
                 self.log_dir.mkdir()
             else:
                 self.error(
-                    "Logger folder does not exist, exiting...",
-                    err_id=101, err_str="MISSING FOLDER"
+                    f"Logger folder '{self.log_dir}' does not exist",
+                    "exiting program...",
+                    err_class=MissingLogFolderError
                 )
 
         # Update no save.
