@@ -242,7 +242,7 @@ class VerboseMessages:
             # Add message to log file.
             self.__add_message(name, now, f"{message}")
 
-    def error(self, *message, err_id=0, err_str="", err_class=None):
+    def error(self, *message, err_id=0, err_str="", err_class=None, **opts):
         """
         Print an error message.
 
@@ -286,13 +286,13 @@ class VerboseMessages:
             if not isinstance(err_id, int):
                 err_id = 1
 
-            self.log(0, "ERROR", colors.RED, err_msg)
+            self.log(0, "ERROR", colors.RED, err_msg, **opts)
             exit(err_id)
 
         else:
-            self.log(0, "ERROR", colors.RED, *message)
+            self.log(0, "ERROR", colors.RED, *message, **opts)
 
-    def warning(self, *message):
+    def warning(self, *message, **opts):
         """
         Print a warning message.
 
@@ -301,10 +301,13 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        """
-        self.log(1, "WARNING", colors.YELLOW, *message)
+        **opts:
+            Arguments passed to VerboseMessages.
 
-    def success(self, *message):
+        """
+        self.log(1, "WARNING", colors.YELLOW, *message, **opts)
+
+    def success(self, *message, **opts):
         """
         Print a success message.
 
@@ -313,10 +316,13 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        """
-        self.log(2, "SUCCESS", colors.GREEN, *message)
+        **opts:
+            Arguments passed to VerboseMessages.
 
-    def info(self, *message):
+        """
+        self.log(2, "SUCCESS", colors.GREEN, *message, **opts)
+
+    def info(self, *message, **opts):
         """
         Print an info message.
 
@@ -325,10 +331,13 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        """
-        self.log(3, "INFO", colors.BLUE, *message)
+        **opts:
+            Arguments passed to VerboseMessages.
 
-    def for_message(self, *message):
+        """
+        self.log(3, "INFO", colors.BLUE, *message, **opts)
+
+    def for_message(self, *message, **opts):
         """
         Print a for loop message.
 
@@ -337,10 +346,14 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        """
-        self.log(3, "INFO", colors.BLUE, *message, decorator=" - ")
+        **opts:
+            Arguments passed to VerboseMessages.
 
-    def progress(self, message, percentage):
+        """
+        deco = opts.pop("decorator", " - ")
+        self.log(3, "INFO", colors.BLUE, *message, decorator=deco, **opts)
+
+    def progress(self, message, percentage, **opts):
         """
         Print the progress percentage.
 
@@ -352,22 +365,19 @@ class VerboseMessages:
         percentage: Float.
             Percentage of progress of the process.
 
+        **opts:
+            Arguments passed to VerboseMessages.
+
         """
-        if float(f"{percentage:.2f}") < 100:
+        end = opts.pop("end", None)
+        if not end and float(f"{percentage:.2f}") < 100:
             end = "\r"
-        else:
+        elif not end:
             end = "\n"
 
-        self.log(
-            3,
-            "INFO",
-            colors.BLUE,
-            f"{message}: [{percentage:.2f}%]",
-            decorator=" - ",
-            end=end
-        )
+        self.for_message(f"{message}: [{percentage:.2f}%]", end=end, **opts)
 
-    def end_progress(self, process="process"):
+    def end_progress(self, process="process", **opts):
         """
         Print the end of the process.
 
@@ -376,12 +386,17 @@ class VerboseMessages:
         process: Str.
             Process name text.
 
+        **opts:
+            Arguments passed to VerboseMessages.
+
         """
+        deco = opts.pop("decorator", " - ")
         self.log(
-            2, "SUCCESS", colors.GREEN, f"{process} done", decorator=" - "
+            2, "SUCCESS", colors.GREEN, f"{process} done", decorator=deco,
+            **opts
         )
 
-    def debug(self, *message):
+    def debug(self, *message, **opts):
         """
         Print a debug message.
 
@@ -390,10 +405,13 @@ class VerboseMessages:
         message: Str.
             Message text.
 
-        """
-        self.log(4, "DEBUG", colors.MAGENTA, *message)
+        **opts:
+            Arguments passed to VerboseMessages.
 
-    def input(self, *message, input_text="INPUT"):
+        """
+        self.log(4, "DEBUG", colors.MAGENTA, *message, **opts)
+
+    def input(self, *message, input_text="INPUT", **opts):
         """
         Print an input message and return the response.
 
@@ -405,12 +423,15 @@ class VerboseMessages:
         input_text: Str.
             Text to be shown before the user input.
 
+        **opts:
+            Arguments passed to VerboseMessages.
+
         Returns
         -------
             String with the response.
 
         """
-        self.log(-1e9, "INPUT", colors.CYAN, *message)
+        self.log(-1e9, "INPUT", colors.CYAN, *message, **opts)
 
         try:
             # Print message in blue.
@@ -428,11 +449,11 @@ class VerboseMessages:
         now = self.get_time()
 
         # Add message to log file.
-        self.add_message("USER INPUT", now, f"{response}")
+        self.__add_message("USER INPUT", now, f"{response}")
 
         return response
 
-    def confirm(self, *message):
+    def confirm(self, *message, **opts):
         """
         Print a confirmation message and return the response when it is valid.
 
@@ -441,6 +462,9 @@ class VerboseMessages:
         message: Str.
             Message text.
 
+        **opts:
+            Arguments passed to VerboseMessages.
+
         Returns
         -------
             Bool with the confirmation value.
@@ -448,7 +472,7 @@ class VerboseMessages:
         """
         while True:
             # Print input message.
-            response = self.input(*message, input_text="[Y/n]")
+            response = self.input(*message, input_text="[Y/n]", **opts)
 
             if re.fullmatch(r"([Yy](es)?)?", response) is not None:
                 return True
