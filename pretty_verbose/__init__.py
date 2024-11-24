@@ -2,11 +2,13 @@
 from pretty_verbose.logger_classes import Logger
 from pretty_verbose.messages_classes import VerboseMessages
 from pretty_verbose.processes_classes import Process, Task
-from pretty_verbose.error_classes import LoggerError
+from pretty_verbose.error_classes import (
+    RunningError, LoggerError, LoggerErrorBase
+)
 
 __all__ = [
     "VerboseMessages",
     "Task", "Process",
     "Logger",
-    "LoggerError"
+    "RunningError", "LoggerError", "LoggerErrorBase"
 ]

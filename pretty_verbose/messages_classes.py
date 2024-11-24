@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pretty_verbose.constants import colors
-from pretty_verbose import LoggerError
+from pretty_verbose import RunningError, LoggerErrorBase
 
 
 class VerboseMessages:
@@ -235,16 +235,22 @@ class VerboseMessages:
             and will exit the process. This argument represents the id of the
             error.
 
-        err_str: Str. Default: ".
-            If different of "" or None, it will be printed as the error
-            string identifier.
+        err_str: Str. Default: "".
+            If different of "" or None, it will be printed as the error string
+            identifier.
+
+        err_class: Exception. Default: None.
+            If an exception, it will be raised.
+
+        **opts:
+            Arguments passed to VerboseMessages.
 
         """
         if err_id:
-            if isinstance(err_class, LoggerError):
-                raise err_class(
-                    colors.RED, *message, err_id=err_id, err_str=err_str
-                )
+            if isinstance(err_class, LoggerErrorBase):
+                raise err_class(*message)
+            if isinstance(err_class, RunningError):
+                raise err_class(*message, err_id=err_id, err_str=err_str)
 
             if err_str:
                 err_msg = f"[Error {err_id} ({err_str})]: "
