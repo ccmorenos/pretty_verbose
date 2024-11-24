@@ -1,6 +1,5 @@
 """Classes for the errors."""
-from pretty_verbose.constants import error_codes
-from pretty_verbose.constants import colors
+from pretty_verbose.constants import colors, error_codes
 
 
 class RunningError(Exception):
