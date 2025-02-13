@@ -71,6 +71,11 @@ class Task(VerboseMessages):
             else:
                 process.add_task(self)
 
+    def __del__(self):
+        """Show timer if active."""
+        if self.timer["on"]:
+            self.task_done(True)
+
     def __get_milliseconds(self, interval):
         """Get the time of the interval in milliseconds.
 
@@ -153,6 +158,16 @@ class Task(VerboseMessages):
             return None
 
         return self.__get_milliseconds(self.timer['diff'])
+
+    def task_done(self, print_timer=False):
+        """Stop the timer of the task and print the total timer."""
+        self.stop_timer()
+        if print_timer:
+            self.info(f"Task done in: {self.total_time()}ms")
+
+    def print_lap(self):
+        """Stop the timer of the task and print the total timer."""
+        self.info(f"Task lap: {self.lap()}ms")
 
     def get_depth(self):
         """Abstract method for the process methods."""
