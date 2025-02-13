@@ -8,6 +8,33 @@ from pathlib import Path
 from pretty_verbose import LoggerErrorBase, MissingLogFolderError, RunningError
 from pretty_verbose.constants import colors
 
+from dataclasses import dataclass
+
+
+@dataclass
+class OutputConfig:
+    """Configuration for the CSV output.
+
+    Attributes
+    ----------
+    filename: Path, Str. Default: "messages.log".
+        Log file in which save the verbose output.
+
+    sep: Str. Default: ";".
+        Separator of the log file.
+
+    overwrite: Bool. Default: False.
+        Overwrite the log file.
+
+    no_save: Bool. Default: False.
+        When active prevents the output saving.
+
+    """
+    filename: str
+    sep: int = ";"
+    overwrite: int = False
+    no_save: int = False
+
 
 class VerboseMessages:
     """
@@ -27,28 +54,16 @@ class VerboseMessages:
     name: Str. Default: "".
         Name of the scope to know who is printing the message.
 
-    scope: Str. Default: "".
+    scope: Str. Default: "". (Deprecated)
         Alias for name (Will be removed in future releases).
 
     filename: Path, Str. Default: "messages.log".
         Log file in which save the verbose output.
 
-    sep: Str. Default: ";".
-        Separator of the log file.
-
-    overwrite: Bool. Default: False.
-        Overwrite the log file.
-
-    no_save: Bool. Default: False.
-        When active prevents the output saving.
-
     """
     __log_started = False
 
-    def __init__(
-        self, level=1, name="", scope="", filename="messages.log", sep=";",
-        overwrite=False, no_save=False
-    ):
+    def __init__(self, level=1, name="", filename="messages.log", **config):
         """Construct the class."""
         # Set verbose level.
         self.level = level
@@ -57,19 +72,14 @@ class VerboseMessages:
         if name:
             self.name = self.scope = name
         else:
-            self.name = self.scope = scope
+            self.name = self.scope = config.pop("scope", "")
+
+        # Create output configuration.
+        self.__output_conf = OutputConfig(filename=filename, **config)
 
         # Set verbose output file.
         self.filename = Path(filename).resolve()
 
-        # Set the separator of the log file.
-        self.sep = sep
-
-        # Overwrite flag
-        self.overwrite = overwrite
-
-        # No save flag.
-        self.__no_save = no_save
         # Init the log DataFrame.
         self.start_log()
 
@@ -81,16 +91,14 @@ class VerboseMessages:
         file an write the header.
 
         """
-        if self.__no_save:
+        if self.__output_conf.no_save:
             return
 
         # Check if the directory exists.
         if not self.filename.parent.exists():
-            no_save, self.__no_save = self.__no_save, True
+
             p_folder = self.filename.parent
-            self.warning(
-                f"The log dir '{p_folder}' does not exist!"
-            )
+            self.warning(f"The log dir '{p_folder}' does not exist!")
 
             if self.confirm("Do you want to create it?"):
                 p_folder.mkdir(parents=True)
@@ -98,20 +106,20 @@ class VerboseMessages:
                 self.error(
                     f"Logger folder '{p_folder}' does not exist",
                     "exiting program...",
-                    err_class=MissingLogFolderError
+                    err_class=MissingLogFolderError, skip_save=True
                 )
-
-            self.__no_save = no_save
 
         if self.__log_started:
             self.warning("The log file is already started", "ignoring...")
             return
 
-        if not self.filename.exists() or self.overwrite:
+        if not self.filename.exists() or self.__output_conf.overwrite:
             with open(
                 self.filename, "w", newline="", encoding="utf-8"
             ) as file:
-                log_messages = csv.writer(file, delimiter=self.sep)
+                log_messages = csv.writer(
+                    file, delimiter=self.__output_conf.sep
+                )
                 log_messages.writerow(
                     ["message_type", "n_datetime", "message"]
                 )
@@ -120,7 +128,7 @@ class VerboseMessages:
 
     def set_no_save(self, no_save):
         """Set the value of not_save."""
-        self.__no_save = no_save
+        self.__output_conf.no_save = no_save
         # Init the log DataFrame.
         self.start_log()
 
@@ -141,7 +149,7 @@ class VerboseMessages:
 
         """
         with open(self.filename, "a", newline="", encoding="utf-8") as file:
-            log_messages = csv.writer(file, delimiter=self.sep)
+            log_messages = csv.writer(file, delimiter=self.__output_conf.sep)
             log_messages.writerow([message_type, right_now, message])
 
     def get_time(self):
@@ -250,7 +258,7 @@ class VerboseMessages:
                 end=end
             )
 
-            if self.__no_save or skip_save:
+            if self.__output_conf.no_save or skip_save:
                 return
 
             # Add message to log file.
