@@ -250,13 +250,10 @@ class VerboseMessages:
             # Join messages.
             message = ", ".join(f"{el}" for el in message)
 
+            text = color + now + self.format_message(name, message, decorator)
+
             # Print message in the given color.
-            print(
-                (
-                    color + now + self.format_message(name, message, decorator)
-                ).ljust(self.get_terminal_columns()),
-                end=end
-            )
+            print(text.ljust(self.get_terminal_columns()), end=end)
 
             if self.__output_conf.no_save or skip_save:
                 return
