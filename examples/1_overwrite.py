@@ -1,17 +1,19 @@
+"""This example test the overwriting functionality."""
 import time
 
 from pretty_verbose import VerboseMessages
 
 
-def write_log(overwrite):
+def write_log(ow):
     messages = VerboseMessages(
         level=3,
         scope="test",
         filename="overwrite.log",
-        overwrite=overwrite
+        log_dir="log_output",
+        overwrite=ow
     )
 
-    messages.success(f"Overwrite: {overwrite}.")
+    messages.success(f"Overwrite: {ow}.")
 
     messages.debug("This is a debug message.")
     messages.error("This is an error message.")

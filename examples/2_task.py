@@ -1,8 +1,8 @@
-"""This example test the logger classes and functionalities."""
+"""This example test the task classes and functionalities."""
 import time
 from random import random
 
-from pretty_verbose import Logger
+from pretty_verbose import Task
 
 
 def test_prints(messager):
@@ -27,15 +27,6 @@ def stop(messager):
     messager.success(f"Task done in {main.total_time()} ms")
 
 
-main = Logger(5, "Main", "log_output")
-
-sub1 = main.new_subprocess("Sub1")
-sub2 = main.new_subprocess("Sub2")
-
+main = Task(5, "Main", True, overwrite=True, log_dir="log_output")
 test_prints(main)
-test_prints(sub1)
-test_prints(sub2)
-
 stop(main)
-stop(sub1)
-stop(sub2)

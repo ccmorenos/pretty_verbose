@@ -27,25 +27,25 @@ def stop(messager):
     messager.success(f"Task done in {main.total_time()} ms")
 
 
-main = Process(5, "Main", "main.log", timer=True, overwrite=True)
+main = Process(5, "Main", "log_output", timer=True, overwrite=True)
 test_prints(main)
 
-sp1 = main.new_subprocess("Sub 1", "sub1.log", timer=True, overwrite=True)
+sp1: Process = main.new_subprocess("Sub 1", timer=True)
 test_prints(sp1)
 
-sp2 = main.new_subprocess("Sub 2", "sub2.log", timer=True, overwrite=True)
+sp2: Process = main.new_subprocess("Sub 2", timer=True)
 test_prints(sp2)
 
-ssp1 = sp2.new_subprocess("SSub 1", "sub3.log", timer=True, overwrite=True)
+ssp1: Process = sp2.new_subprocess("SSub 1", timer=True)
 test_prints(ssp1)
 
-sssp1 = ssp1.new_subprocess("SSSub 1", "sub4.log", timer=True, overwrite=True)
+sssp1: Process = ssp1.new_subprocess("SSSub 1", timer=True)
 test_prints(sssp1)
 
-tsk1 = sp2.new_task("Task 1", "sub3.log", timer=True, overwrite=True)
+tsk1 = sp2.new_task("Task 1", timer=True)
 test_prints(tsk1)
 
-stsk1 = ssp1.new_task("STask 1", "sub4.log", timer=True, overwrite=True)
+stsk1 = ssp1.new_task("STask 1", timer=True)
 test_prints(stsk1)
 
 stop(main)

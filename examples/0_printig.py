@@ -5,7 +5,8 @@ from pretty_verbose import VerboseMessages
 messages = VerboseMessages(
     level=3,
     scope="test",
-    filename="messages.log"
+    filename="messages.log",
+    log_dir="log_output"
 )
 
 messages.debug("This is a debug message.")
