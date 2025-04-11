@@ -20,6 +20,9 @@ class OutputConfig:
     filename: Path, Str. Default: "messages.log".
         Log file in which save the verbose output.
 
+    log_dir: Path, Str. Default: ".".
+        Directory for the output log files.
+
     sep: Str. Default: ";".
         Separator of the log file.
 
@@ -59,6 +62,20 @@ class VerboseMessages:
 
     filename: Path, Str. Default: "messages.log".
         Log file in which save the verbose output.
+
+    Other Parameters
+    ----------------
+    log_dir: Path, Str. Default: ".".
+        Directory for the output log files.
+
+    sep: Str. Default: ";".
+        Separator of the log file.
+
+    overwrite: Bool. Default: False.
+        Overwrite the log file.
+
+    no_save: Bool. Default: False.
+        When active prevents the output saving.
 
     """
     __log_started = False
