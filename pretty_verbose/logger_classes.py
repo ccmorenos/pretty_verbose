@@ -1,6 +1,4 @@
 """Classes of the logger."""
-from pathlib import Path
-
 from pretty_verbose.processes_classes import Process
 
 
@@ -36,56 +34,6 @@ class Logger(Process):
 
     """
 
-    def __init__(
-        self, level, name="Main",
-        log_dir=Path("."), log_file="logger.log", **config
-    ):
-        # Resolve the output directory.
-        self.log_dir = Path(log_dir).resolve()
-
+    def __init__(self, level, name="Main", log_dir=".", **config):
         # create process.
-        super().__init__(
-            level, name, log_file=self.log_dir/log_file, **config
-        )
-
-    def new_task(self, name, log_file, **config):
-        """Add a new task to the process.
-
-        Parameters
-        ----------
-        name: Str.
-            Name of the scope to know which task prints the message.
-
-        log_file: Path, Str.
-            Log file in which save the verbose output.
-
-        **config:
-            Parameters passed to `Task`.
-
-        Returns
-        -------
-            The new task.
-
-        """
-        return super().new_task(name, self.log_dir/log_file, **config)
-
-    def new_subprocess(self, name, log_file, **config):
-        """Add a new subprocess to the process.
-
-        Parameters
-        ----------
-        name: Str.
-            Name of the scope to know which process prints the message.
-
-        log_file: Path, Str.
-            Log file in which save the verbose output.
-
-        **config:
-            Parameters passed to `Process`.
-
-        Returns
-        -------
-            The new process.
-
-        """
-        return super().new_subprocess(name, self.log_dir/log_file, **config)
+        super().__init__(level, name, log_dir, **config)

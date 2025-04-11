@@ -22,15 +22,6 @@ class Task(VerboseMessages):
     name: Str.
         Name of the scope to know which task prints the message.
 
-    log_file: Path, Str.
-        Log file in which save the verbose output.
-
-    sep: Str. Default: ";".
-        Separator of the log file.
-
-    overwrite: Bool. Default: False.
-        Overwrite the log file.
-
     timer: Bool. Default: False.
         Initialize the timer or the task.
 
@@ -45,13 +36,12 @@ class Task(VerboseMessages):
     NAME_REGEX = r"^(([^ \n]+\.)*([^ \n]+:))?([^ \n.:]*)$"
 
     def __init__(
-        self, level, name, log_file, sep=";", overwrite=False, timer=False,
-        process=None, **config
+        self, level, name, timer=False, process=None, **config
     ):
         # Create messager.
         super().__init__(
-            level=level, name=name, filename=log_file, sep=sep,
-            overwrite=overwrite, **config
+            level=level, name=name,
+            filename=config.pop("log_file", f"{name}.log"), **config
         )
 
         # Timer of the task.
@@ -191,17 +181,8 @@ class Process(Task):
     name: Str.
         Name of the scope to know which process prints the message.
 
-    log_file: Path, Str.
-        Log file in which save the verbose output.
-
-    sep: Str. Default: ";".
-        Separator of the log file.
-
-    overwrite: Bool. Default: False.
-        Overwrite the log file.
-
-    timer: Bool. Default: False.
-        Initialize the timer or the task.
+    log_dir: Path, Str. Default: ".".
+        Directory for the output log files.
 
     depth: Task. Default: None.
         Depth of the process.
@@ -219,13 +200,12 @@ class Process(Task):
     MAX_DEPTH = 5
 
     def __init__(
-        self, level, name, log_file, sep=";", overwrite=False, timer=False,
-        depth=None, process=None, **config
+        self, level, name, log_dir=".", depth=None, process=None, **config
     ):
         # Create task.
         super().__init__(
-            level=level, name=name, log_file=log_file, sep=sep, timer=timer,
-            overwrite=overwrite, **config
+            level, name, log_dir=log_dir,
+            log_file=config.pop("log_file", f"{name}.log"), **config
         )
 
         self.subprocesses = {}
@@ -271,16 +251,13 @@ class Process(Task):
         """Return the depth of the process."""
         return self.__depth
 
-    def new_task(self, name, log_file, **config):
+    def new_task(self, name, **config):
         """Add a new task to the process.
 
         Parameters
         ----------
         name: Str.
             Name of the scope to know which task prints the message.
-
-        log_file: Path, Str.
-            Log file in which save the verbose output.
 
         **config:
             Parameters passed to `Task`.
@@ -291,8 +268,12 @@ class Process(Task):
 
         """
         self.tasks[f"{self.name}:{name}"] = Task(
-            self.level, f"{self.name}:{name}", log_file,
-            config.pop("sep", self.sep), **config
+            self.level, f"{self.name}:{name}",
+            log_dir=config.pop("log_dir", self.output_conf().log_dir),
+            sep=config.pop("sep", self.output_conf().sep),
+            overwrite=config.pop("overwrite", self.output_conf().overwrite),
+            no_save=config.pop("no_save", self.output_conf().no_save),
+            **config
         )
 
         return self.tasks[f"{self.name}:{name}"]
@@ -328,16 +309,13 @@ class Process(Task):
 
         return self.tasks.get(f"{self.name}:{name}", None) is not None
 
-    def new_subprocess(self, name, log_file, **config):
+    def new_subprocess(self, name, **config):
         """Add a new subprocess to the process.
 
         Parameters
         ----------
         name: Str.
             Name of the scope to know which process prints the message.
-
-        log_file: Path, Str.
-            Log file in which save the verbose output.
 
         **config:
             Parameters passed to `Process`.
@@ -348,8 +326,12 @@ class Process(Task):
 
         """
         self.subprocesses[f"{self.name}.{name}"] = Process(
-            self.level, f"{self.name}.{name}", log_file,
-            config.pop("sep", self.sep), depth=self, **config
+            self.level, f"{self.name}.{name}",
+            config.pop("log_dir", self.output_conf().log_dir),
+            sep=config.pop("sep", self.output_conf().sep),
+            overwrite=config.pop("overwrite", self.output_conf().overwrite),
+            no_save=config.pop("no_save", self.output_conf().no_save),
+            depth=self, **config
         )
 
         return self.subprocesses[f"{self.name}.{name}"]

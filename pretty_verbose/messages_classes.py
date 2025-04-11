@@ -34,6 +34,7 @@ class OutputConfig:
 
     """
     filename: str
+    log_dir: Path
     sep: int = ";"
     overwrite: int = False
     no_save: int = False
@@ -92,13 +93,21 @@ class VerboseMessages:
             self.name = self.scope = config.pop("scope", "")
 
         # Create output configuration.
-        self.__output_conf = OutputConfig(filename=filename, **config)
+        self.__output_conf = OutputConfig(
+            filename=filename,
+            log_dir=Path(config.pop("log_dir", "")).resolve(),
+            **config
+        )
 
         # Set verbose output file.
-        self.filename = Path(filename).resolve()
+        self.filename = self.__output_conf.log_dir / filename
 
         # Init the log DataFrame.
         self.start_log()
+
+    def output_conf(self):
+        """Get the output configuration for the log."""
+        return self.__output_conf
 
     def start_log(self):
         """
