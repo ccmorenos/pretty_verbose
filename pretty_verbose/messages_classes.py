@@ -98,9 +98,11 @@ class VerboseMessages:
         if not self.filename.parent.exists():
 
             p_folder = self.filename.parent
-            self.warning(f"The log dir '{p_folder}' does not exist!")
+            self.warning(
+                f"The log dir '{p_folder}' does not exist!", skip_save=True
+            )
 
-            if self.confirm("Do you want to create it?"):
+            if self.confirm("Do you want to create it?", skip_save=True):
                 p_folder.mkdir(parents=True)
             else:
                 self.error(
@@ -442,6 +444,9 @@ class VerboseMessages:
         input_text: Str.
             Text to be shown before the user input.
 
+        skip_save: Bool. Default: False.
+            Skip saving the log to a file.
+
         **opts:
             Arguments passed to VerboseMessages.
 
@@ -466,6 +471,9 @@ class VerboseMessages:
 
         # Print time in magenta.
         now = self.get_time()
+
+        if self.__output_conf.no_save or opts.get("skip_save", False):
+            return response
 
         # Add message to log file.
         self.__add_message("USER INPUT", now, f"{response}")
@@ -496,8 +504,7 @@ class VerboseMessages:
             if re.fullmatch(r"([Yy](es)?)?", response) is not None:
                 return True
 
-            elif re.match(r"[Nn]o?", response) is not None:
+            if re.match(r"[Nn]o?", response) is not None:
                 return False
 
-            else:
-                self.warning("Unknown option.")
+            self.warning("Unknown option.")
