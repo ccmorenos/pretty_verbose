@@ -88,12 +88,15 @@ class Task(VerboseMessages):
         args: Any.
             List of arguments of the function.
 
+        print_timer: Bool. Default: Fasle.
+            Whether print or not the timer value after stopping it.
+
         """
         self.start_timer()
         exec_f(*args)
         self.task_done(print_timer)
 
-    def exec_many_time(self, *exec_fs, args, lap=False, print_timer=False):
+    def exec_many_time(self, *exec_fs, args, print_timer=False, lap=False):
         """
         Execute a list of functions and measure the time it takes to complete.
 
@@ -104,6 +107,12 @@ class Task(VerboseMessages):
 
         args: Array.
             List of arguments of each of the functions.
+
+        lap: Bool. Default: Fasle.
+            Whether print or not the timer value after each function.
+
+        print_timer: Bool. Default: Fasle.
+            Whether print or not the timer value after stopping it.
 
         """
         self.start_timer()
@@ -186,7 +195,14 @@ class Task(VerboseMessages):
         return self.__get_milliseconds(self.timer['diff'])
 
     def task_done(self, print_timer=False):
-        """Stop the timer of the task and print the total timer."""
+        """Stop the timer of the task and print the total timer.
+
+        Parameters
+        ----------
+        print_timer: Bool. Default: Fasle.
+            Whether print or not the timer value after stopping it.
+
+        """
         self.stop_timer()
         if print_timer:
             self.info(f"Task done in: {self.total_time()}ms")
