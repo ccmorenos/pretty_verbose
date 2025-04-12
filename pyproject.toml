@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pretty_verbose"
-version = "0.1.0"
+version = "0.1.1"
 
 description = "Package for colored organized verbose printing in python."
 readme = "README.md"
