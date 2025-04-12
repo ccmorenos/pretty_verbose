@@ -1,6 +1,7 @@
 """Test the messages printing."""
-from pretty_verbose import VerboseMessages
 import time
+
+from pretty_verbose import VerboseMessages
 
 messages = VerboseMessages(
     level=3,
@@ -45,7 +46,7 @@ def test_for_message():
 
 
 def test_multiple_messages():
-    """Test debug message printing."""
+    """Test debug message printing with multiple entries."""
     messages.debug("This ", "is ", "a ", "debug ", "message.")
     messages.debug("Trying numbers", 0, 1, 0.1)
     messages.debug("Trying lists", ["A", 0, 1.5])
