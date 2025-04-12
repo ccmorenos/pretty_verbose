@@ -359,7 +359,7 @@ class Process(Task):
         """
         parents, _, _, name = process.get_parents()
 
-        if parents != "" and parents != self.name:
+        if parents not in ("", self.name):
             self.error(
                 f"Processor belongs to another process: {parents}.",
                 err_id=105, err_str="INCOMPATIBLE PARENTS"
