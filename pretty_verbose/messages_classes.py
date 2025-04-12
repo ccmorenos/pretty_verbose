@@ -2,13 +2,12 @@
 import csv
 import os
 import re
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
 from pretty_verbose import LoggerErrorBase, MissingLogFolderError, RunningError
 from pretty_verbose.constants import colors
-
-from dataclasses import dataclass
 
 
 @dataclass
