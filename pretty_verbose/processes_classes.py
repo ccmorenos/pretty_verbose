@@ -32,7 +32,7 @@ class Task(VerboseMessages):
         Parameters passed to `VerboseMessages`.
 
     """
-    # Estructure of the process name.
+    # Structure of the process name.
     NAME_REGEX = r"^(([^ \n]+\.)*([^ \n]+:))?([^ \n.:]*)$"
 
     def __init__(
@@ -76,6 +76,42 @@ class Task(VerboseMessages):
 
         """
         return interval.total_seconds()*1000
+
+    def exec_time(self, exec_f, *args, print_timer=False):
+        """Execute a function and measure the time it takes to complete.
+
+        Parameters
+        ----------
+        exec_f: Callable.
+            Function from wich measure the time.
+
+        args: Any.
+            List of arguments of the function.
+
+        """
+        self.start_timer()
+        exec_f(*args)
+        self.task_done(print_timer)
+
+    def exec_many_time(self, *exec_fs, args, lap=False, print_timer=False):
+        """
+        Execute a list of functions and measure the time it takes to complete.
+
+        Parameters
+        ----------
+        exec_f: Callable.
+            Function from wich measure the time.
+
+        args: Array.
+            List of arguments of each of the functions.
+
+        """
+        self.start_timer()
+        for i, exec_f in exec_fs:
+            exec_f(*args[i])
+            if lap:
+                self.print_lap()
+        self.task_done(print_timer)
 
     def get_parents(self):
         """Extract the parents from the name.
@@ -143,7 +179,7 @@ class Task(VerboseMessages):
             self.warning("Timer is still running. Returning lap...")
             return self.lap()
 
-        elif self.timer["diff"] is None:
+        if self.timer["diff"] is None:
             self.warning("Timer have not been started...")
             return None
 
