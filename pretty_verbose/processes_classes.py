@@ -94,7 +94,7 @@ class Task(VerboseMessages):
         """
         self.start_timer()
         exec_f(*args)
-        self.task_done(print_timer)
+        return self.task_done(print_timer)
 
     def exec_many_time(self, *exec_fs, args, print_timer=False, lap=False):
         """
@@ -120,7 +120,7 @@ class Task(VerboseMessages):
             exec_f(*args[i])
             if lap:
                 self.print_lap()
-        self.task_done(print_timer)
+        return self.task_done(print_timer)
 
     def get_parents(self):
         """Extract the parents from the name.
@@ -206,6 +206,8 @@ class Task(VerboseMessages):
         self.stop_timer()
         if print_timer:
             self.info(f"Task done in: {self.total_time()}ms")
+
+        return self.total_time()
 
     def print_lap(self):
         """Stop the timer of the task and print the total timer."""
