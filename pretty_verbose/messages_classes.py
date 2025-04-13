@@ -274,6 +274,9 @@ class VerboseMessages:
             # Get time in the given color.
             now = self.get_time()
 
+            if len(message) == 0:
+                self.warning("Empty message", skip_save=skip_save)
+
             # Join messages.
             message = ", ".join(f"{el}" for el in message)
 
