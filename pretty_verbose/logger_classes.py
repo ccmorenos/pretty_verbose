@@ -1,4 +1,6 @@
 """Classes of the logger."""
+import readline
+
 from pretty_verbose.processes_classes import Process
 
 
@@ -33,7 +35,50 @@ class Logger(Process):
         Parameters passed to `Process`.
 
     """
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self, level, name="Main", log_dir=".", **config):
         # create process.
         super().__init__(level, name, log_dir, **config)
+
+        self.__history_file = self.output_conf().log_dir / ".history"
+
+        if self.__history_file.exists():
+            readline.read_history_file(self.__history_file)
+
+    def __del__(self):
+        """Function called when the object is deleted."""
+        readline.write_history_file(self.__history_file)
+        return super().__del__()
+
+    def input(self, *message, input_text="INPUT", **opts):
+        """
+        Print an input message and return the response.
+
+        Parameters
+        ----------
+        message: Str.
+            Message text.
+
+        input_text: Str.
+            Text to be shown before the user input.
+
+        skip_save: Bool. Default: False.
+            Skip saving the log to a file.
+
+        **opts:
+            Arguments passed to VerboseMessages.
+
+        Returns
+        -------
+            String with the response.
+
+        """
+        response = super().input(*message, input_text=input_text, **opts)
+        readline.write_history_file(self.__history_file)
+        return response
