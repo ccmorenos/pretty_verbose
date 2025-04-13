@@ -501,9 +501,110 @@ class VerboseMessages:
             return response
 
         # Add message to log file.
-        self.__add_message("USER INPUT", now, f"{response}")
+        self.__add_message("USER INPUT", now, f"{response}".strip())
 
         return response
+
+    def select(self, *message, options: dict, **opts):
+        """
+        Print a options list message from which the user should select.
+
+        Parameters
+        ----------
+        message: Str.
+            Message text.
+
+        options: Array.
+            Available options.
+
+        **opts:
+            Arguments passed to VerboseMessages.
+
+        Returns
+        -------
+            Value of the selected option.
+
+        """
+        many = {
+            False: {
+                "num_re": r"\d+",
+                "list_re": r"\d+",
+                "allow": False
+            },
+            True: {
+                "num_re": r"\d+(?:-\d+)?",
+                "list_re": r"\d+(?:-\d+)?(?:\s*,\s*\d+(?:-\d+)?)*",
+                "allow": True,
+                "repeat": {
+                    True: lambda x: x,
+                    False: lambda x: list(dict.fromkeys(x)),
+                }
+            }
+        }[opts.pop("many", False)]
+        repeat = opts.pop("repeat", False)
+
+        while True:
+            # Print input message.
+            response = self.input(
+                "\n".join([
+                    ", ".join(f"{el}" for el in message),
+                    *[f"{i}) {key}" for i, key in enumerate(options)]
+                ]), input_text="Please select an option", **opts
+            )
+
+            if re.fullmatch(many["list_re"], response) is None:
+                self.warning("Invalid option.")
+                continue
+
+            if not many["allow"]:
+                selected = int(response)
+
+                if selected < len(options):
+                    return options[selected]
+
+                self.warning(
+                    f"Value {selected} out of range, please select between "
+                    f"0 and {len(options) - 1}."
+                )
+                continue
+
+            ret_vals = []
+
+            for sel in re.findall(many["num_re"], response):
+                if "-" in sel:
+                    a, b = map(int, sel.split('-'))
+                    if a > b:
+                        self.warning(f"Not valid option {sel}")
+                        ret_vals = None
+                        break
+
+                    if b < len(options):
+                        for item in options[a:b+1]:
+                            ret_vals.append(item)
+                        continue
+
+                    self.warning(
+                        f"Values {sel} out of range, please select between "
+                        f"0 and {len(options) - 1}."
+                    )
+                    ret_vals = None
+                    break
+
+                selected = int(sel)
+
+                if selected < len(options):
+                    ret_vals.append(options[selected])
+                    continue
+
+                self.warning(
+                    f"Values {sel} out of range, please select between "
+                    f"0 and {len(options) - 1}."
+                )
+                ret_vals = None
+                break
+
+            if ret_vals is not None:
+                return (*many["repeat"][repeat](ret_vals),)
 
     def confirm(self, *message, **opts):
         """
@@ -532,4 +633,4 @@ class VerboseMessages:
             if re.match(r"[Nn]o?", response) is not None:
                 return False
 
-            self.warning("Unknown option.")
+            self.warning("Invalid option.")
