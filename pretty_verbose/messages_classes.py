@@ -480,7 +480,8 @@ class VerboseMessages:
             String with the response.
 
         """
-        self.log(-1e9, "INPUT", colors.CYAN, *message, **opts)
+        if message:
+            self.log(-1e9, "INPUT", colors.CYAN, *message, **opts)
 
         try:
             # Print message in blue.
