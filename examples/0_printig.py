@@ -15,10 +15,11 @@ messages.warning("This is a warning message.")
 messages.success("This is a success message.")
 messages.info("This is an info message.")
 
-for i in range(50):
+rep = 50
+for i in range(rep):
     if i % 10 == 0:
         messages.for_message("This is an info message inside a for loop.")
-    messages.progress("This is a progress message.", (i+1)/0.5)
+    messages.progress("This is a progress message.", (i+1)/rep*100)
     time.sleep(0.01)
 messages.end_progress("Loop.")
 
@@ -49,3 +50,14 @@ messages.info("You answered: " + user_input)
 b_continue = messages.confirm("Confirm message", "Do you want to continue?")
 
 messages.info(f"You continued: {b_continue}")
+
+letter = messages.select("Letters", options=["a", "b", "c"])
+messages.info(f"You selected: {letter}")
+
+number = messages.select("Numbers", options=[i*2+3 for i in range(1, 11, 2)])
+messages.info(f"You selected: {number}")
+
+many = messages.select(
+    "Many", options=[i*2+3 for i in range(1, 11, 2)], many=True
+)
+messages.info(f"You selected: {many}")
