@@ -44,12 +44,12 @@ class Logger(Process):
 
     def __init__(self, level, name="Main", log_dir=".", **config):
         # create process.
-        super().__init__(level, name, log_dir, **config)
-
         self.__history_file = self.output_conf().log_dir / ".history"
 
         if self.__history_file.exists():
             readline.read_history_file(self.__history_file)
+
+        super().__init__(level, name, log_dir, **config)
 
     def __del__(self):
         """Function called when the object is deleted."""
