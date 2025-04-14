@@ -80,5 +80,6 @@ class Logger(Process):
 
         """
         response = super().input(*message, input_text=input_text, **opts)
-        readline.write_history_file(self.__history_file)
+        if self.__history_file.parent.exists():
+            readline.write_history_file()
         return response
