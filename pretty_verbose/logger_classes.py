@@ -1,5 +1,6 @@
 """Classes of the logger."""
 import readline
+from pathlib import Path
 
 from pretty_verbose.processes_classes import Process
 
@@ -44,7 +45,7 @@ class Logger(Process):
 
     def __init__(self, level, name="Main", log_dir=".", **config):
         # create process.
-        self.__history_file = self.output_conf().log_dir / ".history"
+        self.__history_file = Path(log_dir).resolve() / ".history"
 
         if self.__history_file.exists():
             readline.read_history_file(self.__history_file)
