@@ -1,5 +1,5 @@
 """Classes of the logger."""
-import readline
+# import readline
 from pathlib import Path
 
 from pretty_verbose.processes_classes import Process
@@ -47,14 +47,14 @@ class Logger(Process):
         # create process.
         self.__history_file = Path(log_dir).resolve() / ".history"
 
-        if self.__history_file.exists():
-            readline.read_history_file(self.__history_file)
+        # if self.__history_file.exists():
+        #     readline.read_history_file(self.__history_file)
 
         super().__init__(level, name, log_dir, **config)
 
     def __del__(self):
         """Function called when the object is deleted."""
-        readline.write_history_file(self.__history_file)
+        # readline.write_history_file(self.__history_file)
         return super().__del__()
 
     def input(self, *message, input_text="INPUT", **opts):
@@ -81,6 +81,6 @@ class Logger(Process):
 
         """
         response = super().input(*message, input_text=input_text, **opts)
-        if self.__history_file.parent.exists():
-            readline.write_history_file()
+        # if self.__history_file.parent.exists():
+        #     readline.write_history_file()
         return response
